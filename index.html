@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Ninja AI - برومبت النينجا v3.0</title>
+  
+  <!-- Tailwind CSS & FontAwesome Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#090a16">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="PromptNinja">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <style> 
+    body { 
+      font-family: 'Cairo', sans-serif;
+      background-color: #070814;
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(139, 92, 246, 0.25) 0px, transparent 50%),
+        radial-gradient(at 90% 20%, rgba(236, 72, 153, 0.2) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(30, 58, 138, 0.3) 0px, transparent 50%);
+      background-attachment: fixed;
+    } 
+
+    /* Glassmorphism Styles */
+    .glass-card {
+      background: rgba(15, 17, 38, 0.55);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(236, 72, 153, 0.05);
+    }
+
+    .glass-input {
+      background: rgba(8, 10, 26, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .glass-input:focus {
+      border-color: #ec4899;
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.35);
+      outline: none;
+    }
+
+    /* Ninja Animations */
+    @keyframes ninjaPulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.5)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.8)); }
+    }
+
+    .ninja-glow {
+      animation: ninjaPulse 3s infinite ease-in-out;
+    }
+
+    .shuriken-spin:hover i.fa-shuriken {
+      transform: rotate(360deg);
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+
+  <!-- PWA Manifest Injection -->
+  <script>
+    const manifest = {
+      name: "Prompt Ninja AI",
+      short_name: "PromptNinja",
+      start_url: "./",
+      display: "standalone",
+      background_color: "#070814",
+      theme_color: "#070814",
+      icons: [{
+        src: "https://cdn-icons-png.flaticon.com/512/1077/1077035.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any maskable"
+      }]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blob);
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestURL;
+    document.head.appendChild(link);
+  </script>
+</head>
+<body class="text-slate-100 min-h-screen p-4 md:p-8 selection:bg-pink-500 selection:text-white">
+
+  <div class="max-w-4xl mx-auto glass-card rounded-3xl p-6 md:p-9 relative overflow-hidden">
+    
+    <!-- Decorative Glowing Ninja Aura Background -->
+    <div class="absolute -top-20 -left-20 w-60 h-60 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-20 -right-20 w-60 h-60 bg-pink-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- App Install Button (PWA) -->
+    <button id="installAppBtn" class="hidden absolute top-6 left-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-2 shadow-lg shadow-pink-500/20 transition-all border border-pink-400/30">
+      <i class="fa-solid fa-download"></i> تثبيت التطبيق
+    </button>
+
+    <!-- Header -->
+    <div class="text-center mb-8 border-b border-purple-900/40 pb-6 relative">
+      <div class="inline-block p-3 rounded-2xl bg-slate-950/60 border border-purple-500/30 mb-3 ninja-glow">
+        <i class="fa-solid fa-user-ninja text-3xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-rose-400"></i>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-300 to-pink-500 tracking-tight">
+        برومبت النينجا <span class="text-xs bg-pink-500/20 text-pink-300 border border-pink-500/40 px-2.5 py-0.5 rounded-full font-sans tracking-normal">Prompt Ninja v3.0</span>
+      </h1>
+      <p class="text-xs md:text-sm text-purple-200/70 mt-2">منصة هندسة البرومبتات الاحترافية بخاطفة النينجا وسحر الذكاء الاصطناعي</p>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Left Column -->
+      <div class="space-y-4">
+        
+        <!-- Engine Selection -->
+        <div>
+          <label class="block text-xs font-bold text-pink-400 mb-1.5"><i class="fa-solid fa-microchip ml-1"></i> منصة الذكاء الاصطناعي:</label>
+          <select id="engine" class="w-full glass-input rounded-xl p-3 text-xs md:text-sm text-purple-100 cursor-pointer">
+            <option value="google_flow" class="bg-slate-950 text-white">Google Flow / Gemini (Imagen 3)</option>
+            <option value="chatgpt" class="bg-slate-950 text-white">ChatGPT / DALL-E 3</option>
+            <option value="leonardo" class="bg-slate-950 text-white">Leonardo AI (Phoenix / Alchemy)</option>
+            <option value="nano_banana" class="bg-slate-950 text-white">Nano Banana / Fast AI</option>
+            <option value="midjourney" class="bg-slate-950 text-white">Midjourney v6.1</option>
+            <option value="flux" class="bg-slate-950 text-white">Flux.1 (Dev / Schnell)</option>
+            <option value="sdxl" class="bg-slate-950 text-white">Stable Diffusion XL</option>
+          </select>
+        </div>
+
+        <!-- Prompt Language (NEW FEATURE) -->
+        <div>
+          <label class="block text-xs font-bold text-cyan-400 mb-1.5"><i class="fa-solid fa-language ml-1"></i> لغة البرومبت المولد:</label>
+          <select id="promptLang" class="w-full glass-input rounded-xl p-3 text-xs md:text-sm text-cyan-200 cursor-pointer border-cyan-500/30">
+            <option value="en" class="bg-slate-950 text-white">الإنجليزية (الأعلى دقة لجميع المنصات)</option>
+            <option value="ar" class="bg-slate-950 text-white">العربية (مناسبة لـ Gemini و ChatGPT)</option>
+          </select>
+        </div>
+
+        <!-- Task Selection -->
+        <div>
+          <label class="block text-xs font-bold text-purple-300 mb-1.5"><i class="fa-solid fa-bullseye ml-1"></i> نوع المهمة المطلوبة:</label>
+          <select id="task" class="w-full glass-input rounded-xl p-3 text-xs md:text-sm text-purple-100 cursor-pointer">
+            <option value="create" class="bg-slate-950 text-white">إنشاء صورة جديدة بالكامل</option>
+            <option value="clothes" class="bg-slate-950 text-white">تغيير وتعديل الملابس (Outfit Swap)</option>
+            <option value="background" class="bg-slate-950 text-white">تغيير الخلفية فقط (Background Swap)</option>
+            <option value="retouch" class="bg-slate-950 text-white">تحسين الجودة والإضاءة (Enhance & Retouch)</option>
+            <option value="social" class="bg-slate-950 text-white">تصميم سوشيال ميديا إعلاني</option>
+          </select>
+        </div>
+
+        <!-- Subject Selection -->
+        <div>
+          <label class="block text-xs font-bold text-purple-300 mb-1.5"><i class="fa-solid fa-user-ninja ml-1"></i> الشخصية / المجال:</label>
+          <select id="subject" class="w-full glass-input rounded-xl p-3 text-xs md:text-sm text-purple-100 cursor-pointer">
+            <option value="custom" class="bg-slate-950 text-white">شخصية عامة / موديل</option>
+            <option value="doctor_cardio" class="bg-slate-950 text-white">طبيب قلب (Cardiologist)</option>
+            <option value="doctor_dental" class="bg-slate-950 text-white">طبيب أسنان (Dentist)</option>
+            <option value="doctor_surgeon" class="bg-slate-950 text-white">طبيب جراح (Surgeon)</option>
+            <option value="teacher_math" class="bg-slate-950 text-white">مدرس رياضيات / علوم</option>
+            <option value="teacher_online" class="bg-slate-950 text-white">مدرس أونلاين (Studio Setup)</option>
+            <option value="business" class="bg-slate-950 text-white">رجل / سيدة أعمال</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Right Column -->
+      <div class="space-y-4">
+
+        <!-- Camera Lens & Lighting -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-purple-300 mb-1.5"><i class="fa-solid fa-camera ml-1"></i> نوع العدسة:</label>
+            <select id="lens" class="w-full glass-input rounded-xl p-2.5 text-xs text-purple-100 cursor-pointer">
+              <option value="85mm" class="bg-slate-950 text-white">85mm (بورتريه عالي الدقة)</option>
+              <option value="50mm" class="bg-slate-950 text-white">50mm (لقطة واقعية)</option>
+              <option value="35mm" class="bg-slate-950 text-white">35mm (سينمائي واسع)</option>
+              <option value="24mm" class="bg-slate-950 text-white">24mm (زاوية عريضة)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-purple-300 mb-1.5"><i class="fa-solid fa-lightbulb ml-1"></i> نمط الإضاءة:</label>
+            <select id="lighting" class="w-full glass-input rounded-xl p-2.5 text-xs text-purple-100 cursor-pointer">
+              <option value="studio" class="bg-slate-950 text-white">Studio Softbox (ستوديو)</option>
+              <option value="cinematic" class="bg-slate-950 text-white">Cinematic (سينمائي درامي)</option>
+              <option value="golden" class="bg-slate-950 text-white">Golden Hour (شمس دافئة)</option>
+              <option value="neon" class="bg-slate-950 text-white">Neon Cyberpunk (نيون ملون)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Aspect Ratio -->
+        <div>
+          <label class="block text-xs font-bold text-purple-300 mb-1.5"><i class="fa-solid fa-crop ml-1"></i> أبعاد الصورة والمنصة:</label>
+          <select id="ratio" class="w-full glass-input rounded-xl p-3 text-xs md:text-sm text-purple-100 cursor-pointer">
+            <option value="1:1" class="bg-slate-950 text-white">مربع (1:1) - Instagram Post</option>
+            <option value="9:16" class="bg-slate-950 text-white">طولي (9:16) - Reels / Story / TikTok</option>
+            <option value="16:9" class="bg-slate-950 text-white">عرضي (16:9) - YouTube / Banner</option>
+            <option value="4:5" class="bg-slate-950 text-white">عمودي (4:5) - Facebook / LinkedIn</option>
+          </select>
+        </div>
+
+        <!-- Brand Colors -->
+        <div>
+          <label class="block text-xs font-bold text-purple-300 mb-1.5"><i class="fa-solid fa-palette ml-1"></i> ألوان الهوية (Hex Palette):</label>
+          <div class="flex items-center gap-3 glass-input p-2 rounded-xl">
+            <input type="color" id="c1" value="#1e1b4b" class="w-9 h-8 bg-transparent cursor-pointer border-0 rounded">
+            <input type="color" id="c2" value="#8b5cf6" class="w-9 h-8 bg-transparent cursor-pointer border-0 rounded">
+            <input type="color" id="c3" value="#ec4899" class="w-9 h-8 bg-transparent cursor-pointer border-0 rounded">
+            <span class="text-xs text-purple-300/70 mr-auto">دمج ألوان العلامة التجارية تلقائياً</span>
+          </div>
+        </div>
+
+        <!-- Face Consistency -->
+        <div>
+          <label class="block text-xs font-bold text-purple-300 mb-1.5"><i class="fa-solid fa-face-smile ml-1"></i> تثبيت الملامح والوجه:</label>
+          <select id="face" class="w-full glass-input rounded-xl p-3 text-xs md:text-sm text-purple-100 cursor-pointer">
+            <option value="strict" class="bg-slate-950 text-white">تثبيت دقيق 100% (High Detail Face & Skin)</option>
+            <option value="cref" class="bg-slate-950 text-white">إضافة كود تثبيت الشخصية (--cref)</option>
+            <option value="off" class="bg-slate-950 text-white">غير مفعل (لغير الأشخاص)</option>
+          </select>
+        </div>
+
+        <!-- Extra Details Input -->
+        <div>
+          <label class="block text-xs font-bold text-purple-300 mb-1.5"><i class="fa-solid fa-pen-nib ml-1"></i> تفاصيل إضافية (الملابس / الخلفية):</label>
+          <input type="text" id="details" placeholder="مثال: بدلة كحلي فاخرة / خلفية عيادة مودرن إضاءة بنفسجية" class="w-full glass-input rounded-xl p-3 text-xs md:text-sm text-purple-100 placeholder-purple-400/40">
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Generate Button with Ninja Slash Style -->
+    <button id="generateBtn" class="shuriken-spin w-full mt-7 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-500 hover:to-rose-500 text-white font-black py-4 px-6 rounded-2xl text-base md:text-lg transition-all shadow-xl shadow-pink-600/30 flex items-center justify-center gap-3 border border-pink-400/30 active:scale-95">
+      <i class="fa-solid fa-shuriken text-xl text-pink-200"></i>
+      <span>ضربة النينجا: توليد ونسخ البرومبت</span>
+    </button>
+
+    <!-- Outputs Section -->
+    <div class="mt-7 space-y-4">
+      
+      <!-- Positive Prompt -->
+      <div>
+        <div class="flex justify-between items-center mb-1.5">
+          <label class="text-xs font-bold text-pink-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-terminal"></i> البرومبت الأساسي (Positive Prompt):
+          </label>
+          <button id="copyPosBtn" class="text-xs text-purple-300 hover:text-pink-300 transition-colors flex items-center gap-1 bg-purple-900/40 px-2.5 py-1 rounded-lg border border-purple-500/20">
+            <i class="fa-solid fa-copy"></i> نسخ
+          </button>
+        </div>
+        <textarea id="output" readonly dir="ltr" class="w-full glass-input rounded-xl p-3.5 text-xs font-mono text-pink-300 h-28 resize-none shadow-inner"></textarea>
+      </div>
+
+      <!-- Negative Prompt -->
+      <div>
+        <div class="flex justify-between items-center mb-1.5">
+          <label class="text-xs font-bold text-purple-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-ban"></i> البرومبت السلبي (Negative Prompt):
+          </label>
+          <button id="copyNegBtn" class="text-xs text-purple-300 hover:text-pink-300 transition-colors flex items-center gap-1 bg-purple-900/40 px-2.5 py-1 rounded-lg border border-purple-500/20">
+            <i class="fa-solid fa-copy"></i> نسخ
+          </button>
+        </div>
+        <textarea id="negOutput" readonly dir="ltr" class="w-full glass-input rounded-xl p-3 text-xs font-mono text-purple-300 h-16 resize-none shadow-inner">deformed, bad anatomy, extra limbs, blurry, plastic skin, distorted face, low quality, overexposed, bad hands, missing fingers</textarea>
+      </div>
+
+      <!-- Toast Notification -->
+      <div id="status" class="hidden text-center text-xs font-bold text-pink-300 bg-pink-950/60 border border-pink-500/50 p-3 rounded-xl shadow-lg animate-pulse">
+        ⚡ تم توليد ونسخ البرومبت بنجاح بضربة النينجا!
+      </div>
+
+    </div>
+
+    <!-- History Section -->
+    <div class="mt-8 border-t border-purple-900/40 pt-5">
+      <h3 class="text-xs font-bold text-purple-300/80 mb-3 flex items-center gap-1.5">
+        <i class="fa-solid fa-clock-rotate-left"></i> سجل البرومبتات الأخيرة:
+      </h3>
+      <div id="historyContainer" class="space-y-2 max-h-36 overflow-y-auto pr-1">
+        <p class="text-xs text-purple-400/50">لا يوجد برومبتات محفوظة بعد.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let history = JSON.parse(localStorage.getItem('prompt_ninja_history') || '[]');
+
+    function renderHistory() {
+      const container = document.getElementById('historyContainer');
+      if (history.length === 0) {
+        container.innerHTML = '<p class="text-xs text-purple-400/50">لا يوجد برومبتات محفوظة بعد.</p>';
+        return;
+      }
+      container.innerHTML = history.slice(-5).reverse().map((item) => `
+        <div class="glass-input p-2.5 rounded-xl text-xs font-mono text-purple-200 flex justify-between items-center gap-2">
+          <span class="truncate dir-ltr">${item}</span>
+          <button onclick="navigator.clipboard.writeText('${item.replace(/'/g, "\\'")}')" class="text-pink-400 hover:text-pink-300 text-xs shrink-0 p-1"><i class="fa-solid fa-copy"></i></button>
+        </div>
+      `).join('');
+    }
+
+    renderHistory();
+
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const engine = document.getElementById('engine').value;
+      const promptLang = document.getElementById('promptLang').value;
+      const task = document.getElementById('task').value;
+      const subject = document.getElementById('subject').value;
+      const lens = document.getElementById('lens').value;
+      const lighting = document.getElementById('lighting').value;
+      const ratio = document.getElementById('ratio').value;
+      const face = document.getElementById('face').value;
+      const details = document.getElementById('details').value.trim();
+      const c1 = document.getElementById('c1').value;
+      const c2 = document.getElementById('c2').value;
+      const c3 = document.getElementById('c3').value;
+
+      // English Mappings
+      const subjectMapEn = {
+        custom: "a professional model",
+        doctor_cardio: "an expert cardiologist in modern clinic with ECG equipment",
+        doctor_dental: "a professional dentist in clean high-tech studio",
+        doctor_surgeon: "a lead surgeon in modern operating room",
+        teacher_math: "a passionate teacher in high-tech classroom",
+        teacher_online: "a modern e-learning instructor in studio setup",
+        business: "an executive corporate leader in modern office"
+      };
+
+      // Arabic Mappings
+      const subjectMapAr = {
+        custom: "شخصية وموديل محترف",
+        doctor_cardio: "طبيب قلب خبير داخل عيادة حديثة مع أجهزة رسم القلب",
+        doctor_dental: "طبيب أسنان محترف في ستوديو عيادة متطور",
+        doctor_surgeon: "طبيب جراح متمرس في غرفة عمليات حديثة والمعقمة",
+        teacher_math: "مدرس شغوف داخل فصل دراسي تفاعلي حديث",
+        teacher_online: "معلم أونلاين محترف داخل ستوديو تصوير تعليمي",
+        business: "رجل أعمال تنفيذي في مكتب شركة مودرن"
+      };
+
+      let fullPrompt = "";
+
+      if (promptLang === "ar") {
+        // Arabic Generation Logic
+        let faceDirectiveAr = face === "strict" ? "تثبيت ملامح الوجه بدقة متناهية، تفاصيل البشرة الطبيعية والواقعية" : (face === "cref" ? "--cref [رابط_الصورة] --cw 100" : "");
+        let taskDirectiveAr = details ? details : "صورة احترافية بأعلى جودة";
+        let shotDetailsAr = `عدسة ${lens}، إضاءة ${lighting}`;
+
+        fullPrompt = `صورة تجارية فائقة الواقعية لـ ${subjectMapAr[subject]}. التفاصيل: ${taskDirectiveAr}. إعدادات التصوير: ${shotDetailsAr}. الألوان الأساسية للتصميم (${c1} و ${c2} و ${c3}). ${faceDirectiveAr}. دقة 8k، أبعاد الصورة ${ratio}.`;
+
+      } else {
+        // English Generation Logic
+        let faceDirectiveEn = face === "strict" ? "hyperrealistic portrait, preserving exact facial features and skin texture" : (face === "cref" ? "--cref [URL_HERE] --cw 100" : "");
+        
+        let taskDirectiveEn = "";
+        if (task === "clothes") taskDirectiveEn = `outfit swap, wearing ${details || "elegant professional attire"}, maintaining exact facial features`;
+        else if (task === "background") taskDirectiveEn = `background swap, setting in ${details || "modern studio background"}, bokeh effect`;
+        else if (task === "retouch") taskDirectiveEn = `quality enhancement, professional color grading, ultra-detailed textures`;
+        else if (task === "social") taskDirectiveEn = `high-convert
